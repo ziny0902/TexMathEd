@@ -1,0 +1,9 @@
+bar{a}
+check{a}
+ddot{a}
+dot{a}
+hat{a}
+overline{aaaa}
+overrightarrow{AB}
+tilde{a}
+vec{a}

@@ -1,0 +1,95 @@
+<DrawerClickableItem@MDNavigationDrawerItem>
+    focus_color: "#e7e4c0"
+    text_color: "#4a4939"
+    icon_color: "#4a4939"
+    ripple_color: "#c5bdd2"
+    selected_color: "#0c6c4d"
+
+
+<DrawerLabelItem@MDNavigationDrawerItem>
+    text_color: "#4a4939"
+    icon_color: "#4a4939"
+    focus_behavior: False
+    selected_color: "#4a4939"
+    _no_ripple_effect: True
+
+<LatexEditor>
+    id: Editor
+    info_text: 'Info'
+    BoxLayout:
+        id: main
+        orientation: 'vertical'
+        size: root.size
+        MDScreen:
+            MDNavigationLayout:
+                MDScreenManager:
+                    id: screen_manager
+                    MDScreen:
+                        name: "screen1"
+                        id: display
+                        canvas:
+                            Color:
+                                rgba: 0.85,0.85,0.85,1
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                        MDTopAppBar:
+                            id: appbar
+                            title: "Latex Math Editor (help: <h <TAB>, menu: <me<TAB>)"
+                            elevation: 4
+                            pos_hint: {"top": 1}
+                            md_bg_color: "#e7e4c0"
+                            specific_text_color: "#4a4939"
+                            left_action_items:
+                                [['menu', lambda x: nav_drawer.set_state("open")]]
+                MDNavigationDrawer:
+                    id: nav_drawer
+                    radius: (0, 16, 16, 0)
+                    MDNavigationDrawerMenu:
+                        id: nav_menu
+                        MDNavigationDrawerLabel:
+                            text: "cheatsheet"
+                        DrawerClickableItem:
+                            text: '<c  : calculus'
+                            on_release: latex_field.text += '<c\t'
+                        DrawerClickableItem:
+                            text: '<l  : linear algebra'
+                            on_release: latex_field.text += '<l\t'
+                        DrawerClickableItem:
+                            text: '<b  : basic'
+                            on_release: latex_field.text += '<b\t'
+                        DrawerClickableItem:
+                            text: '<g  : Greek and Hebrew'
+                            on_release: latex_field.text += '<g\t'
+                        DrawerClickableItem:
+                            text: '<gt : Geometry and trigonometry'
+                            on_release: latex_field.text += '<gt\t'
+
+                        MDNavigationDrawerDivider:
+                        MDNavigationDrawerLabel:
+                            text: "symbol explore"
+
+                        DrawerClickableItem:
+                            text: "<cal :  calculus"
+                            on_release: latex_field.text += '<cal\t'
+                        DrawerClickableItem:
+                            text: "<acc : accents"
+                            on_release: latex_field.text += '<acc\t'
+                        DrawerClickableItem:
+                            text: "<bi  : binary"
+                            on_release: latex_field.text += '<bi\t'
+                        DrawerClickableItem:
+                            text: "<dot : dots"
+                            on_release: latex_field.text += '<dot\t'
+                        DrawerClickableItem:
+                            text: "<gre : greek"
+                            on_release: latex_field.text += '<gre\t'
+                        DrawerClickableItem:
+                            text: "<m: matrix"
+                            on_release: latex_field.text += '<m\t'
+        MDTextField:
+            id:latex_field
+            multiline: True
+            hint_text: "input latex eqauation"
+            font_size: '25sp'
+            on_text: root.on_text(self.text)

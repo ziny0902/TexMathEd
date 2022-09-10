@@ -1,0 +1,14 @@
+Leftrightarrow
+angle
+cap
+cup
+gets
+iff
+implies
+in
+leftrightarrow
+ni
+notin
+subset
+supset
+to

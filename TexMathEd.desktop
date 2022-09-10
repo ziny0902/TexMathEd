@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=TeXMathEd
+GenericName=Latex Math mode Edit/priview
+Exec=/home/ziny/.local/bin/TexMathEd/LatexMathEditor.py
+Terminal=false
+Icon=/home/ziny/.local/bin/TexMathEd/icon.svg
+Type=Application
+Categories=Editor
