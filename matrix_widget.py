@@ -29,6 +29,7 @@ class MatrixWidget(MDWidget) :
     cols = 2
     rows = 2
     pts = []
+    mtype = "bmatrix"
     def __init__(self, **kwargs):
         Builder.load_string(KV)
         _cols = kwargs.get('cols')
@@ -57,9 +58,9 @@ class MatrixWidget(MDWidget) :
         self.rows = rows
         self.input_pos = 0
         self.pts = [0]*4*(self.cols+self.rows - 2)
-        self.canvas_size = [120*self.cols, 60*self.rows]
+        self.canvas_size = [60*self.cols, 60*self.rows]
         self.create_cell_label()
-        self.size = [120*self.cols+2*self.pad, 60*self.rows + 2*self.pad]
+        self.size = [60*self.cols+2*self.pad, 60*self.rows + 2*self.pad]
         #self.ids.input.focus = True
     def create_cell_label(self):
         total = self.cols * self.rows
@@ -105,13 +106,13 @@ class MatrixWidget(MDWidget) :
         pass
     def create_matrix_text(self):
         ret = '\\['
-        ret += '\\begin{bmatrix}\n'
+        ret += '\\begin{'+self.mtype+'}\n'
         for i in range(0, self.rows):
             for j in range(0, self.cols):
                 ret += self.label_list[i*self.cols + j].text + ' & '
             ret = ret[:len(ret)-2]
             ret += '\\\\\n'
-        ret += '\end{bmatrix}'
+        ret += '\end{'+self.mtype+'}'
         ret += '\\]'
         self.result = ret
     def _on_keyboard_down(self,  keyboard, keycode, text, modifiers):

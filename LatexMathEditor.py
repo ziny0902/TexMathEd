@@ -89,6 +89,18 @@ cheat_sheet_kv = '''
             orientation: 'vertical'
             multiselect: False
     '''
+import re
+def check_matrix_meta(str) -> bool :
+    x = re.search(r"<m([bp]?)(([0-9])x([0-9]))?", str)
+    if x == None :
+        return False
+    #debug
+    #print("0 group:", x.group(0))
+    #
+    if len(x.group(0)) == len(str):
+        return True
+    return False
+
 
 def parse_meta(str):
     meta = ''
@@ -288,13 +300,7 @@ class LatexEditor(Widget):
             cols=3, rows=3,
             size_hint=[0.9, None]
         )
-        self.matrix_popup = MDDialog(
-            title = "Matrix",
-            type = "custom",
-            content_cls = self.matrix_window
-        )
-        self.matrix_popup.bind(on_open=self.matrix_on_open)
-        self.matrix_popup.bind(on_dismiss=self.matrix_on_dismiss)
+        self.create_matrix_popup()
         # create cheatsheet image
         self.img = Image(source = 'cheatsheet/picture/Calculus.png')
         self.img.allow_stretch = False
@@ -311,6 +317,15 @@ class LatexEditor(Widget):
         self.ids.display.add_widget(self.img_scrollview)
         self.info_text = info_str
         self.ids.display.bind(size=self.on_resize)
+    def create_matrix_popup(self):
+        self.matrix_popup = MDDialog(
+            title = "Matrix",
+            type = "custom",
+            size_hint = [None,None],
+            content_cls = self.matrix_window
+        )
+        self.matrix_popup.bind(on_open=self.matrix_on_open)
+        self.matrix_popup.bind(on_dismiss=self.matrix_on_dismiss)
     def on_resize(self, *args):
         self.img_scrollview.size_hint_y = 0.9 - (self.ids.appbar.size[1]/self.ids.display.size[1])
         hint_x = self.img.texture.size[0]/self.size[0]
@@ -338,9 +353,24 @@ class LatexEditor(Widget):
         if self.ids.latex_field.focus == False :
             #self.remove_widget(self.category_view)
             pass
-    def callMatrixWindow(self):
+    def callMatrixWindow(self, meta):
         self.focus_text_field.focus = False
         self.focus_text_field = None
+        x = re.search(r"<m([bp]?)(([0-9])x([0-9]))?", meta)
+        matrix_type = "b"
+        cols = 3
+        rows = 3
+        if x.group(1) != "":
+            matrix_type = x.group(1)
+        if x.group(3) != None and x.group(4) != None :
+            cols = int(x.group(3))
+            rows = int(x.group(4))
+        #debug
+        #print("cols, rows:", cols, rows)
+        #
+        self.matrix_window.set_col_row(cols, rows)
+        self.matrix_window.mtype = matrix_type + "matrix"
+        self.matrix_popup.update_height()
         self.matrix_popup.open()
         pass
     def callCheetSheet(self, path):
@@ -410,18 +440,22 @@ class LatexEditor(Widget):
         if c == '\t':
             value = value.rstrip('\t')
             meta = parse_meta(value)
-            category_str = meta_command.get(meta)
+            category_str = ""
+            if check_matrix_meta(meta) :
+                category_str = "mat"
+            else:
+                category_str = meta_command.get(meta)
             if category_str is not None:
                 self.ids.latex_field.text = value[0:-len(meta)]
-                self.display_cheatsheet(category_str)
+                self.display_cheatsheet(category_str, meta)
             else:
                 self.ids.latex_field.text = value
-    def display_cheatsheet(self, str):
+    def display_cheatsheet(self, str, meta):
         type_str = str[-3:]
         if type_str == 'png':
             self.update_image(str)
         elif type_str == 'mat':
-            self.callMatrixWindow()
+            self.callMatrixWindow(meta)
         elif str == 'menu':
             self.ids.nav_drawer.set_state("open")
             self.focus_text_field.focus = False
